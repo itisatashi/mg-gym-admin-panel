@@ -6,9 +6,10 @@ import MemberForm from "./MemberForm";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 
 import { useDeleteMember } from "./useDeleteMember";
+import { calculateStatus } from "../../helpers/dateHelpers";
 
 function MemberRow({ member }) {
-  const { id, fullName, phone, planType, startDate, endDate, status } = member;
+  const { id, fullName, phone, planType, startDate, endDate } = member;
 
   const { removeMember, isDeleting } = useDeleteMember();
 
@@ -17,6 +18,9 @@ function MemberRow({ member }) {
   }
 
   const initial = fullName.charAt(0).toUpperCase();
+
+  // Calculate a member's days until his endDate
+  const status = calculateStatus(endDate);
 
   // Status
   const statusClass = {

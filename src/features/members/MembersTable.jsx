@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUrlParams } from "../../hooks/useUrlParams";
 
 import MemberRow from "./MemberRow";
@@ -11,6 +11,7 @@ import ErrorState from "../../ui/ErrorState";
 import Empty from "../../ui/Empty";
 
 import { PAGE_SIZE } from "../../helpers/constants";
+import { calculateStatus } from "../../helpers/dateHelpers";
 
 function MembersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,8 +21,14 @@ function MembersTable() {
   const searchQuery = getParam("search").toLocaleLowerCase();
   const statusFilter = getParam("status");
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
   // Fetch data from Supabase
   const { members, isLoading, error } = useMembers();
+
   if (isLoading) return <Spinner size={80} />;
   if (error) return <ErrorState message={error.message} />;
 
@@ -31,7 +38,10 @@ function MembersTable() {
       .toLocaleLowerCase()
       .includes(searchQuery);
 
-    const matchesStatus = !statusFilter || member.status === statusFilter;
+    // here we calculate a member's status based on endDate
+    const memberStatus = calculateStatus(member.endDate);
+
+    const matchesStatus = !statusFilter || memberStatus === statusFilter;
 
     return matchesSearch && matchesStatus;
   });

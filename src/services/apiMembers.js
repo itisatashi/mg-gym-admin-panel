@@ -17,14 +17,9 @@ export async function getMembers() {
 
 // Add member
 export async function createMember(newMember) {
-  const memberData = {
-    ...newMember,
-    status: newMember.status || "active",
-  };
-
   const { data, error } = await supabase
     .from("members")
-    .insert([memberData])
+    .insert([newMember])
     .select()
     .single();
 

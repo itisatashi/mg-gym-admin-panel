@@ -86,5 +86,14 @@ export function calculateEndDate(startDate, planType) {
   return start.toISOString().split("T")[0];
 }
 
+export function calculateStatus(endDate) {
+  const daysLeft = getDaysUntil(endDate);
+
+  if (daysLeft < 0) return "expired";
+  if (daysLeft <= 7) return "expiring";
+
+  return "active";
+}
+
 // get today
 export const today = new Date().toISOString().split("T")[0];
