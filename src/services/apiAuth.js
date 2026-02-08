@@ -43,32 +43,60 @@ export async function getCurrentUser() {
   return { ...user.user, profile };
 }
 
-// ============ CREATE STAFF (Owner only) ============
+// ============ CREATE STAFF (via Edge Function) ============
 export async function createStaffAccount({ email, password, fullName }) {
-  // Create auth user
-  const { data: authData, error: authError } =
-    await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    });
-
-  // Note: admin.createUser requires service_role key
-  // For client-side, we'll use a different approach (see below)
-
-  if (authError) throw new Error(authError.message);
-
-  // Create profile
-  const { error: profileError } = await supabase.from("profiles").insert([
+  const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-staff`,
     {
-      id: authData.user.id,
-      email,
-      fullName: fullName,
-      role: "staff",
-    },
-  ]);
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${
+          (
+            await supabase.auth.getSession()
+          ).data.session?.access_token
+        }`,
+      },
+      body: JSON.stringify({ email, password, fullName }),
+    }
+  );
 
-  if (profileError) throw new Error(profileError.message);
+  const data = await response.json();
 
-  return authData;
+  if (data.error) throw new Error(data.error);
+
+  return data;
+}
+
+// ============ GET ALL STAFF PROFILES ============
+export async function getStaffProfiles() {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("role", "staff")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error("Could not load staff");
+
+  return data;
+}
+
+// ============ DELETE STAFF (via Edge Function) ============
+export async function deleteStaffProfile(id) {
+  const response = await fetch(
+    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-staff`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: id }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (data.error) throw new Error(data.error);
+
+  return id;
 }
