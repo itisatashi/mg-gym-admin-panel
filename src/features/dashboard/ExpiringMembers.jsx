@@ -1,4 +1,4 @@
-import { HiExclamationCircle, HiExclamationTriangle } from "react-icons/hi2";
+import { HiExclamationTriangle } from "react-icons/hi2";
 import { getDaysUntil, isExpiringSoon } from "../../helpers/dateHelpers";
 import Spinner from "../../ui/Spinner";
 import { useMembers } from "../members/useMembers";
@@ -24,7 +24,7 @@ function ExpiringMembers() {
         <div>
           <h2 className="font-semibold">Expiring Soon</h2>
           <p className="text-sm text-text-muted">
-            {expiringMembers.length} members expiring this week
+            {expiringMembers.length} members expiring in the next 7 days
           </p>
         </div>
       </div>

@@ -5,17 +5,27 @@ import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Settings from "./pages/Settings";
 import AppLayout from "./ui/AppLayout";
+import ProtectedRoute from "./ui/ProtectedRoute";
+import Login from "./pages/Login";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
+
+        <Route path="/login" element={<Login />} />
       </Routes>
 
       <Toaster
