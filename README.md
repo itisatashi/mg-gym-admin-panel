@@ -149,4 +149,4 @@ MIT License
 
 ---
 
-Built with ❤️ by Itachi (Atabek)
+Built with ❤️ by Atachi (Atabek)
