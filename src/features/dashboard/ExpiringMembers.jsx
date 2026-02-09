@@ -1,11 +1,11 @@
 import { HiExclamationTriangle } from "react-icons/hi2";
 import { getDaysUntil, isExpiringSoon } from "../../helpers/dateHelpers";
+import { useAllMembers } from "./useAllMembers";
 import Spinner from "../../ui/Spinner";
-import { useMembers } from "../members/useMembers";
 import ExpiringMemberRow from "./ExpiringMemberRow";
 
 function ExpiringMembers() {
-  const { members, isLoading } = useMembers();
+  const { members, isLoading } = useAllMembers();
 
   if (isLoading) return <Spinner size={60} />;
 

@@ -3,14 +3,22 @@ import { useSettings } from "./useSettings";
 import { useUpdateSettings } from "./useUpdateSettings";
 
 import Spinner from "../../ui/Spinner";
+import { useEffect } from "react";
 
 function PlanPrices() {
   const { settings, isLoading } = useSettings();
   const { saveSettings, isUpdating } = useUpdateSettings();
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: settings,
   });
+
+  // Reset form when settings data loads
+  useEffect(() => {
+    if (settings) {
+      reset(settings);
+    }
+  }, [settings, reset]);
 
   if (isLoading) return <Spinner size={60} />;
 

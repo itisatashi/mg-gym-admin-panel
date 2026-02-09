@@ -1,3 +1,5 @@
+import { getMonthsFromPlan } from "./planTypes";
+
 // Get today with time reset to midnight
 export function getToday() {
   const today = new Date();
@@ -71,16 +73,7 @@ export function calculateEndDate(startDate, planType) {
   if (!startDate || !planType) return "";
 
   const start = new Date(startDate);
-
-  const monthsToAdd = {
-    "1_month": 1,
-    "2_month": 2,
-    "3_month": 3,
-    "6_month": 6,
-    "1_year": 12,
-  };
-
-  const months = monthsToAdd[planType] || 0;
+  const months = getMonthsFromPlan(planType);
   start.setMonth(start.getMonth() + months);
 
   return start.toISOString().split("T")[0];

@@ -1,11 +1,11 @@
 import { HiUsers, HiCheckCircle, HiClock, HiSparkles } from "react-icons/hi2";
-import { useMembers } from "../members/useMembers";
 import Spinner from "../../ui/Spinner";
 import { isActive, isThisMonth, isThisWeek } from "../../helpers/dateHelpers";
 import StatCard from "../../ui/StatCard";
+import { useAllMembers } from "./useAllMembers";
 
 function DashboardStats() {
-  const { members, isLoading } = useMembers();
+  const { members, isLoading } = useAllMembers();
 
   if (isLoading) return <Spinner size={60} />;
 

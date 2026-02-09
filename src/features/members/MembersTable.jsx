@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUrlParams } from "../../hooks/useUrlParams";
 
 import MemberRow from "./MemberRow";
@@ -11,52 +11,51 @@ import ErrorState from "../../ui/ErrorState";
 import Empty from "../../ui/Empty";
 
 import { PAGE_SIZE } from "../../helpers/constants";
-import { calculateStatus } from "../../helpers/dateHelpers";
 
 function MembersTable() {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Filter
-  const { getParam } = useUrlParams();
-  const searchQuery = getParam("search").toLocaleLowerCase();
+  const { getParam, setParam } = useUrlParams();
+  const searchQuery = getParam("search");
   const statusFilter = getParam("status");
+  const currentPage = Number(getParam("page")) || 1;
 
-  // Reset to page 1 when filters change
   useEffect(() => {
-    setCurrentPage(1);
+    if (currentPage !== 1) {
+      setParam("page", "");
+    }
   }, [searchQuery, statusFilter]);
 
   // Fetch data from Supabase
-  const { members, isLoading, error } = useMembers();
-
-  if (isLoading) return <Spinner size={80} />;
-  if (error) return <ErrorState message={error.message} />;
-
-  // Filter based on the URL
-  const filteredMembers = (members || []).filter((member) => {
-    const matchesSearch = member.fullName
-      .toLocaleLowerCase()
-      .includes(searchQuery);
-
-    // here we calculate a member's status based on endDate
-    const memberStatus = calculateStatus(member.endDate);
-
-    const matchesStatus = !statusFilter || memberStatus === statusFilter;
-
-    return matchesSearch && matchesStatus;
+  const { members, totalCount, isLoading, error, prefetchPage } = useMembers({
+    page: currentPage,
+    search: searchQuery,
+    status: statusFilter,
   });
 
-  // Pagination
-  const totalMembers = filteredMembers.length;
-  const totalPages = Math.ceil(totalMembers / PAGE_SIZE);
+  // Calculate total pages from SERVER count
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const endIndex = startIndex + PAGE_SIZE;
-  const currentMembers = filteredMembers.slice(startIndex, endIndex);
+  // PREFETCH next and prev
+  useEffect(() => {
+    if (currentPage < totalPages) {
+      prefetchPage(currentPage + 1);
+    }
+
+    if (currentPage > 1) {
+      prefetchPage(currentPage - 1);
+    }
+  }, [currentPage, totalPages, prefetchPage]);
+
+  // Loading state
+  if (isLoading) return <Spinner size={80} />;
+
+  // Error state
+  if (error) return <ErrorState message={error.message} />;
 
   // Empty state
-  if (filteredMembers.length === 0) {
-    return <Empty message="No members found" />;
+  if (members.length === 0) return <Empty message="No members found" />;
+
+  function handlePageChange(page) {
+    setParam("page", page === 1 ? "" : String(page));
   }
 
   return (
@@ -75,7 +74,7 @@ function MembersTable() {
             </tr>
           </thead>
           <tbody>
-            {currentMembers.map((member) => (
+            {members.map((member) => (
               <MemberRow key={member.id} member={member} />
             ))}
           </tbody>
@@ -84,9 +83,9 @@ function MembersTable() {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={totalMembers}
+          totalItems={totalCount}
           pageSize={PAGE_SIZE}
-          onPageChange={setCurrentPage}
+          onPageChange={handlePageChange}
         />
       </div>
     </Menus>

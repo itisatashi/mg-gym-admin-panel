@@ -5,6 +5,7 @@ import { calculateEndDate, today } from "../../helpers/dateHelpers";
 
 import { useCreateMember } from "./useCreateMember";
 import { useUpdateMember } from "./useUpdateMember";
+import { PLAN_TYPES } from "../../helpers/planTypes";
 
 function MemberForm({
   onCloseModal,
@@ -105,12 +106,11 @@ function MemberForm({
           {...register("planType", { required: "Please select a plan" })}
           disabled={isWorking}
         >
-          <option value="">Select a plan</option>
-          <option value="1_month">1 Month</option>
-          <option value="2_month">2 Months</option>
-          <option value="3_month">3 Months</option>
-          <option value="6_month">6 Months</option>
-          <option value="1_year">1 Year</option>
+          {PLAN_TYPES.map((plan) => (
+            <option key={plan.value} value={plan.value}>
+              {plan.label}
+            </option>
+          ))}
         </select>
         {errors.planType && (
           <span className="text-sm text-danger">{errors.planType.message}</span>

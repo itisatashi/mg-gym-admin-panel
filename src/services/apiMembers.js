@@ -1,11 +1,15 @@
 import supabase from "./supabase";
+import { PAGE_SIZE } from "../helpers/constants";
 
-// Get members
-export async function getMembers() {
-  const { data, error } = await supabase
-    .from("members")
-    .select("*")
-    .order("created_at", { ascending: false });
+// Helper: Get today's date in YYYY-MM-DD format
+function getDateString(daysFromNow = 0) {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  return date.toISOString().split("T")[0];
+}
+
+export async function getAllMembers() {
+  const { data, error } = await supabase.from("members").select("*");
 
   if (error) {
     console.error("Error fetching:", error);
@@ -13,6 +17,44 @@ export async function getMembers() {
   }
 
   return data;
+}
+
+// Get members
+export async function getMembers({ page = 1, search = "", status = "" } = {}) {
+  const from = (page - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  let query = supabase
+    .from("members")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false });
+
+  if (search) {
+    query = query.ilike("fullName", `%${search}%`);
+  }
+
+  // Add status filter (convert status to date conditions)
+  const today = getDateString(0);
+  const weekFromNow = getDateString(7);
+
+  if (status === "active") {
+    query = query.gt("endDate", weekFromNow);
+  } else if (status === "expiring") {
+    query = query.gte("endDate", today).lte("endDate", weekFromNow);
+  } else if (status === "expired") {
+    query = query.lt("endDate", today);
+  }
+
+  query = query.range(from, to);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error("Error fetching:", error);
+    throw new Error("Members could not be loaded");
+  }
+
+  return { members: data, totalCount: count };
 }
 
 // Add member
@@ -42,7 +84,7 @@ export async function updateMember(id, updatedMember) {
 
   if (error) {
     console.error("Error updating member:", error);
-    throw new Error("Member could not be updateded");
+    throw new Error("Member could not be updated");
   }
 
   return data;
@@ -54,7 +96,7 @@ export async function deleteMember(id) {
 
   if (error) {
     console.error("Error deleting member:", error);
-    throw new Error("Member could not be updateded");
+    throw new Error("Member could not be deleted");
   }
 
   return id;
