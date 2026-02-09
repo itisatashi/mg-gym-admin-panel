@@ -137,9 +137,9 @@ The app includes reusable UI components:
 
 ## 📱 Screenshots
 
-![Dashboard](./public/screenshots/dashboard.png)
-![Members](./public/screenshots/members.png)
-![Settings](./public/screenshots/settings.png)
+![Dashboard](public/screenshots/dashboard.png)
+![Members](public/screenshots/members.png)
+![Settings](public/screenshots/settings.png)
 
 ## 🤝 Contributing
 
