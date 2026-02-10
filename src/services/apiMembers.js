@@ -8,6 +8,7 @@ function getDateString(daysFromNow = 0) {
   return date.toISOString().split("T")[0];
 }
 
+// Get all members
 export async function getAllMembers() {
   const { data, error } = await supabase.from("members").select("*");
 
@@ -19,7 +20,7 @@ export async function getAllMembers() {
   return data;
 }
 
-// Get members
+// Get members by filter
 export async function getMembers({ page = 1, search = "", status = "" } = {}) {
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;

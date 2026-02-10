@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useUrlParams } from "../../hooks/useUrlParams";
+import { useMembers } from "./useMembers";
 
 import MemberRow from "./MemberRow";
 import Pagination from "../../ui/Pagination";
 import Menus from "../../ui/Menus";
 
-import { useMembers } from "./useMembers";
 import Spinner from "../../ui/Spinner";
 import ErrorState from "../../ui/ErrorState";
 import Empty from "../../ui/Empty";

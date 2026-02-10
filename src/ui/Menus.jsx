@@ -66,12 +66,13 @@ function List({ id, children }) {
   );
 }
 
-function Button({ children, icon, onClick, danger = false }) {
+function Button({ children, icon, danger = false }) {
   const { close } = useContext(MenusContext);
+
   function handleClick() {
-    onClick?.();
     close();
   }
+
   return (
     <li>
       <button

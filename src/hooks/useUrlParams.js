@@ -20,7 +20,6 @@ export function useUrlParams() {
       } else {
         newParams.delete(key);
       }
-
       setSearchParams(newParams);
     },
     [searchParams, setSearchParams]

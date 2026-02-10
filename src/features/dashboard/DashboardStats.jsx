@@ -24,7 +24,7 @@ function DashboardStats() {
     members?.filter((member) => isThisMonth(member.startDate)).length || 0;
 
   return (
-    <div className="grid grid-cols-4 gap-6">
+    <div className="grid grid-cols-4 gap-5">
       <StatCard
         icon={<HiUsers />}
         label="Total Members"
