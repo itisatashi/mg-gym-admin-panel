@@ -28,7 +28,7 @@ function PlanPrices() {
 
   return (
     <div className="card p-6">
-      <h2 className="text-lg font-semibold mb-6">💰 Plan Prices</h2>
+      <h2 className="text-lg font-semibold mb-6">Plan Prices</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         {/* 1 Month */}
