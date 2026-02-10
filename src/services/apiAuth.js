@@ -9,7 +9,24 @@ export async function login({ email, password }) {
 
   if (error) throw new Error(error.message);
 
-  return data;
+  // Fetch profile to return complete user object
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+
+  if (profileError) {
+    console.error("Profile fetch error during login:", profileError);
+    // Don't throw here, just return user without profile if it fails (graceful degradation)
+    // Or throw if profile is critical. We'll return user with potentially missing profile.
+  }
+
+  // Return data with user merged with profile, matching getCurrentUser shape
+  return {
+    ...data,
+    user: { ...data.user, profile },
+  };
 }
 
 // ============ LOGOUT ============
@@ -52,13 +69,11 @@ export async function createStaffAccount({ email, password, fullName }) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          (
-            await supabase.auth.getSession()
-          ).data.session?.access_token
+          (await supabase.auth.getSession()).data.session?.access_token
         }`,
       },
       body: JSON.stringify({ email, password, fullName }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -90,13 +105,11 @@ export async function deleteStaffProfile(id) {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${
-          (
-            await supabase.auth.getSession()
-          ).data.session?.access_token
+          (await supabase.auth.getSession()).data.session?.access_token
         }`,
       },
       body: JSON.stringify({ userId: id }),
-    }
+    },
   );
 
   const data = await response.json();

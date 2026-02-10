@@ -8,7 +8,7 @@ import {
 
 function MainNav() {
   return (
-    <nav className="flex-1 p-4 ">
+    <nav className="flex-1 p-4 overflow-y-auto">
       <ul className="flex flex-col gap-2">
         <li>
           <NavItem

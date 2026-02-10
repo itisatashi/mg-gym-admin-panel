@@ -6,7 +6,7 @@ function Settings() {
   const { isOwner } = useUser();
 
   return (
-    <div className="flex flex-col gap-8 max-w-2xl">
+    <div className="flex flex-col gap-8 max-w-2xl ">
       {/* Plan Prices - Everyone can see */}
       <PlanPrices />
 
