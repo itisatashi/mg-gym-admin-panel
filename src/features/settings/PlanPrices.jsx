@@ -43,6 +43,18 @@ function PlanPrices() {
           <span className="text-text-muted">UZS</span>
         </div>
 
+        {/* 2 Months */}
+        <div className="flex items-center gap-4">
+          <label className="w-32 text-sm text-text-secondary">2 Months</label>
+          <input
+            type="number"
+            className="input flex-1"
+            defaultValue={settings?.price_2_month}
+            {...register("price_2_month")}
+          />
+          <span className="text-text-muted">UZS</span>
+        </div>
+
         {/* 3 Months */}
         <div className="flex items-center gap-4">
           <label className="w-32 text-sm text-text-secondary">3 Months</label>

@@ -18,8 +18,6 @@ export async function login({ email, password }) {
 
   if (profileError) {
     console.error("Profile fetch error during login:", profileError);
-    // Don't throw here, just return user without profile if it fails (graceful degradation)
-    // Or throw if profile is critical. We'll return user with potentially missing profile.
   }
 
   // Return data with user merged with profile, matching getCurrentUser shape

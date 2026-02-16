@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+`import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createMember } from "../../services/apiMembers";
 import toast from "react-hot-toast";
 
@@ -12,6 +12,7 @@ export function useCreateMember() {
     onSuccess: () => {
       toast.success("Member created successfully!  🎉");
       queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["all-members"] });
     },
     onError: (error) => {
       toast.error(error.message);

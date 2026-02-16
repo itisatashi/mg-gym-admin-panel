@@ -12,6 +12,7 @@ export function useDeleteMember() {
     onSuccess: () => {
       toast.success("Member deleted successfully!  🎉");
       queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["all-members"] });
     },
 
     onError: (error) => {

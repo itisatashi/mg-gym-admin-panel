@@ -12,6 +12,7 @@ export function useUpdateMember() {
     onSuccess: () => {
       toast.success("Member updated successfully! 🎉");
       queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["all-members"] });
     },
     onError: (error) => {
       toast.error(error.message);

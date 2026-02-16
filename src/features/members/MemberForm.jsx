@@ -54,12 +54,12 @@ function MemberForm({
     if (isEditMode) {
       editMember(
         { id: memberToEdit.id, data },
-        { onSuccess: () => onCloseModal?.() }
+        { onSuccess: () => onCloseModal?.() },
       );
     } else if (isRenewMode) {
       editMember(
-        { id: memberToRenew, data },
-        { onSuccess: () => onCloseModal?.() }
+        { id: memberToRenew.id, data },
+        { onSuccess: () => onCloseModal?.() },
       );
     } else {
       createNewMember(data, {
@@ -158,10 +158,10 @@ function MemberForm({
           {isWorking
             ? "Saving..."
             : isEditMode
-            ? "Save Changes"
-            : isRenewMode
-            ? "Renew Member"
-            : "Add Member"}
+              ? "Save Changes"
+              : isRenewMode
+                ? "Renew Member"
+                : "Add Member"}
         </button>
       </div>
     </form>
