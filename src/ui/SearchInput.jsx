@@ -9,7 +9,7 @@ function SearchInput({ paramName = "search", placeholder = "Search..." }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setParam(paramName, query);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [query, paramName, setParam]);

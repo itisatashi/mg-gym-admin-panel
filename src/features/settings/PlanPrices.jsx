@@ -31,6 +31,18 @@ function PlanPrices() {
       <h2 className="text-lg font-semibold mb-6">Plan Prices</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        {/* Daily Pass */}
+        <div className="flex items-center gap-4">
+          <label className="w-32 text-sm text-text-secondary">Daily Pass</label>
+          <input
+            type="number"
+            className="input flex-1"
+            defaultValue={settings?.price_daily_pass}
+            {...register("price_daily_pass")}
+          />
+          <span className="text-text-muted">UZS</span>
+        </div>
+
         {/* 1 Month */}
         <div className="flex items-center gap-4">
           <label className="w-32 text-sm text-text-secondary">1 Month</label>

@@ -12,3 +12,8 @@ export function getMonthsFromPlan(planValue) {
   const plan = PLAN_TYPES.find((p) => p.value === planValue);
   return plan?.months || 0;
 }
+
+export function getMonthsFromPlanWithLabel(planValue) {
+  const plan = PLAN_TYPES.find((p) => p.value === planValue);
+  return plan?.label || "none";
+}

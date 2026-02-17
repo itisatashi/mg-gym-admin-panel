@@ -2,6 +2,7 @@ import { useState } from "react";
 import { HiBanknotes } from "react-icons/hi2";
 
 import { useAllMembers } from "./useAllMembers";
+import { useAllDailyVisits } from "./useAllDailyVisits";
 import { useSettings } from "../settings/useSettings";
 import { PLAN_TYPES } from "../../helpers/planTypes";
 import Spinner from "../../ui/Spinner";
@@ -59,16 +60,23 @@ function formatUZS(amount) {
 
 function RevenueOverview() {
   const { members, isLoading: isLoadingMembers } = useAllMembers();
+  const { dailyVisits, isLoading: isLoadingVisits } = useAllDailyVisits();
   const { settings, isLoading: isLoadingSettings } = useSettings();
   const [dateFilter, setDateFilter] = useState("all");
 
-  if (isLoadingMembers || isLoadingSettings) return <Spinner size={60} />;
+  if (isLoadingMembers || isLoadingSettings || isLoadingVisits)
+    return <Spinner size={60} />;
 
   // Filter members by startDate within selected range
   const { from, to } = getDateRange(dateFilter);
   const filteredMembers = from
     ? members?.filter((m) => m.startDate >= from && m.startDate <= to)
     : members || [];
+
+  // Filter daily visits by date within selected range
+  const filteredVisits = from
+    ? dailyVisits?.filter((v) => v.date >= from && v.date <= to)
+    : dailyVisits || [];
 
   // Calculate revenue per plan type
   const planRevenue = PLAN_TYPES.map((plan) => {
@@ -80,8 +88,16 @@ function RevenueOverview() {
     return { ...plan, count, price, revenue: count * price };
   });
 
-  const totalRevenue = planRevenue.reduce((sum, p) => sum + p.revenue, 0);
-  const totalMembers = filteredMembers.length;
+  // Calculate daily visit revenue
+  const dayPassRevenue = filteredVisits.reduce(
+    (sum, v) => sum + (v.amount || 25000),
+    0,
+  );
+  const dayPassCount = filteredVisits.length;
+
+  const totalRevenue =
+    planRevenue.reduce((sum, p) => sum + p.revenue, 0) + dayPassRevenue;
+  const totalMembers = filteredMembers.length + dayPassCount;
 
   return (
     <div className="card p-6 flex flex-col">
@@ -137,6 +153,18 @@ function RevenueOverview() {
             </div>
           </div>
         ))}
+
+        {/* Day Pass Revenue */}
+        <div className="p-4 bg-white/5 rounded-xl flex items-center gap-3">
+          <div className="w-2 h-10 rounded-full bg-linear-to-b from-orange-500 to-red-500" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-text-muted">Day Passes</p>
+            <p className="font-semibold truncate">
+              {formatUZS(dayPassRevenue)}
+            </p>
+            <p className="text-xs text-text-muted">{dayPassCount} visits</p>
+          </div>
+        </div>
       </div>
     </div>
   );

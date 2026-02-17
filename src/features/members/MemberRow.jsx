@@ -7,6 +7,7 @@ import ConfirmDialog from "../../ui/ConfirmDialog";
 
 import { useDeleteMember } from "./useDeleteMember";
 import { calculateStatus } from "../../helpers/dateHelpers";
+import { getMonthsFromPlanWithLabel } from "../../helpers/planTypes";
 
 function MemberRow({ member }) {
   const { id, fullName, phone, planType, startDate, endDate } = member;
@@ -43,7 +44,7 @@ function MemberRow({ member }) {
       <td className="p-4 text-text-secondary">{phone}</td>
       <td className="p-4">
         <span className="px-3 py-1 bg-accent/20 text-accent-hover rounded-full text-sm">
-          {planType}
+          {getMonthsFromPlanWithLabel(planType)}
         </span>
       </td>
       <td className="p-4 text-text-secondary">{startDate}</td>
